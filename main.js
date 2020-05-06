@@ -26,6 +26,7 @@ module.exports.loop = function () {
   }
 
   const tower = Game.getObjectById('5eb0dde217e4ca600b488c16');
+  const tower2 = Game.getObjectById('5eb1bb4f00fa15d122397a9a');
   if (tower) {
     const closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
     if (closestHostile) {
@@ -36,6 +37,18 @@ module.exports.loop = function () {
     });
     if (closestDamagedStructure && tower.store.energy > 500) {
       tower.repair(closestDamagedStructure);
+    }
+  }
+  if (tower2) {
+    const closestHostile = tower2.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+    if (closestHostile) {
+      tower2.attack(closestHostile);
+    }
+    const closestDamagedStructure = tower2.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => structure.hits < structure.hitsMax && structure.hits < 5000,
+    });
+    if (closestDamagedStructure && tower2.store.energy > 500) {
+      tower2.repair(closestDamagedStructure);
     }
   }
 
