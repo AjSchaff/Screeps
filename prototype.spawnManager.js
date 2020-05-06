@@ -1,4 +1,4 @@
-const listOfRoles = ["harvester", "builder", "upgrader"];
+const listOfRoles = ['harvester', 'builder', 'upgrader'];
 
 StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
   /**
@@ -29,7 +29,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
     numberOfCreeps[role] = _.sum(creepsInRoom, (c) => c.memory.role == role);
     if (numberOfCreeps[`${role}`] < this.memory.minCreeps[role]) {
       let name = `${role}${Game.time.toString().slice(-2)}`;
-      Game.spawns[spawn].spawnCreep([WORK, WORK, CARRY, MOVE, MOVE], name, {
+      Game.spawns[spawn].spawnCreep([WORK, CARRY, MOVE], name, {
         memory: { role: `${role}`, source: source },
       });
     }
@@ -38,10 +38,10 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
   if (Game.spawns[spawn].spawning) {
     var spawningCreep = Game.creeps[Game.spawns[spawn].spawning.name];
     Game.spawns[spawn].room.visual.text(
-      "🛠️" + spawningCreep.memory.role,
+      '🛠️' + spawningCreep.memory.role,
       Game.spawns[spawn].pos.x + 1,
       Game.spawns[spawn].pos.y,
-      { align: "left", opacity: 0.8 }
+      { align: 'left', opacity: 0.8 }
     );
   }
 };

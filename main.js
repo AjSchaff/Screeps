@@ -1,50 +1,66 @@
-let roleHarvester = require("role.harvester");
-let roleUpgrader = require("role.upgrader");
-let roleBuilder = require("role.builder");
-require("prototype.spawnManager");
+/* eslint-disable no-undef */
+/* eslint-disable import/no-unresolved */
+const roleHarvester = require('role.harvester');
+const roleUpgrader = require('role.upgrader');
+const roleBuilder = require('role.builder');
+require('./prototype.spawnManager');
 
+// eslint-disable-next-line func-names
 module.exports.loop = function () {
   /**
    * Memory Cleanup
    * Iterates of Memory, and checks to see if the name in Memory is present in the Game
    * If it is not, it deletes it from Memory.
    */
-  for (let name in Memory.creeps) {
+  for (const name in Memory.creeps) {
     if (!Game.creeps[name]) {
       delete Memory.creeps[name];
-      console.log("Clearing non-existing creep memory:", name);
+      console.log('Clearing non-existing creep memory:', name);
     }
   }
 
   // for each spawn
-  for (let spawnName in Game.spawns) {
+  for (const spawnName in Game.spawns) {
     // run spawn logic
     Game.spawns[spawnName].spawnCreepsIfNecessary();
   }
 
-  var tower = Game.getObjectById("5eb0dde217e4ca600b488c16");
+  const tower = Game.getObjectById('5eb0dde217e4ca600b488c16');
+  const tower2 = Game.getObjectById('5eb1bb4f00fa15d122397a9a');
   if (tower) {
-    var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+    const closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
     if (closestHostile) {
       tower.attack(closestHostile);
     }
-    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+    const closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (structure) => structure.hits < structure.hitsMax && structure.hits < 5000,
     });
     if (closestDamagedStructure && tower.store.energy > 500) {
       tower.repair(closestDamagedStructure);
     }
   }
+  if (tower2) {
+    const closestHostile = tower2.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+    if (closestHostile) {
+      tower2.attack(closestHostile);
+    }
+    const closestDamagedStructure = tower2.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => structure.hits < structure.hitsMax && structure.hits < 5000,
+    });
+    if (closestDamagedStructure && tower2.store.energy > 500) {
+      tower2.repair(closestDamagedStructure);
+    }
+  }
 
-  for (var name in Game.creeps) {
-    var creep = Game.creeps[name];
-    if (creep.memory.role == "harvester") {
+  for (const name in Game.creeps) {
+    const creep = Game.creeps[name];
+    if (creep.memory.role == 'harvester') {
       roleHarvester.run(creep);
     }
-    if (creep.memory.role == "upgrader") {
+    if (creep.memory.role == 'upgrader') {
       roleUpgrader.run(creep);
     }
-    if (creep.memory.role == "builder") {
+    if (creep.memory.role == 'builder') {
       roleBuilder.run(creep);
     }
   }
