@@ -35,23 +35,20 @@ const roleHarvester = {
       const SecondaryTargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) => {
           return (
-            structure.structureType === STRUCTURE_TOWER &&
+            (structure.structureType === STRUCTURE_STORAGE ||
+              structure.structureType === STRUCTURE_TOWER) &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
           );
         },
       });
-      if (PriorityTargets) {
+      // console.log('secondary targets: ', SecondaryTargets);
+      if (PriorityTargets || SecondaryTargets) {
         // console.log('here');
         // console.log('free energy: ', creep.store.getCapacity());
-        if (creep.transfer(PriorityTargets, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(PriorityTargets, {
-            visualizePathStyle: { stroke: '#00FF00' },
-          });
-        }
-      } else if (SecondaryTargets) {
-        // console.log('her2e');
-        if (creep.transfer(SecondaryTargets, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(SecondaryTargets, {
+        if (
+          creep.transfer(PriorityTargets || SecondaryTargets, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE
+        ) {
+          creep.moveTo(PriorityTargets || SecondaryTargets, {
             visualizePathStyle: { stroke: '#00FF00' },
           });
         }
