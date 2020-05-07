@@ -8,9 +8,6 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
   const { room } = this;
   const spawn = this.name;
 
-  console.log(room);
-  console.log(spawn);
-
   // find all creeps in room
   /** @type {Array.<Creep>} */
   const creepsInRoom = room.find(FIND_MY_CREEPS);

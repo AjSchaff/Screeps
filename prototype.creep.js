@@ -1,33 +1,32 @@
+/* eslint-disable no-undef */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable global-require */
 const roles = {
-  harvester: require("role.harvester"),
-  upgrader: require("role.upgrader"),
-  builder: require("role.builder"),
-  repairer: require("role.repairer"),
-  harvester2: require("class.harvesterRevamp")
+  harvester: require('role.harvester'),
+  upgrader: require('role.upgrader'),
+  builder: require('role.builder'),
+  repairer: require('role.repairer'),
 };
 
-
-
-Creep.prototype.runRole = function() {
-  console.log('this role is: ', JSON.stringify(roles[this.memory.role]));
-  console.log('this run fn() is: ', roles[this.memory.role].run(this));
-  roles[this.memory.role].run(this);
+Creep.prototype.runRole = function () {
+  const creep = this;
+  const { role } = creep.memory;
+  roles[role].run(this);
 };
 
-/** @function 
+/** @function
     @param {bool} useContainer
     @param {bool} useSource */
-Creep.prototype.getEnergy = function(useContainer, useSource) {
+Creep.prototype.getEnergy = function (useContainer, useSource) {
   /** @type {StructureContainer} */
   let container;
   // if the Creep should look for containers
   if (useContainer) {
     // find closest container
     container = this.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: s =>
-        (s.structureType == STRUCTURE_CONTAINER ||
-          s.structureType == STRUCTURE_STORAGE) &&
-        s.store[RESOURCE_ENERGY] > 200
+      filter: (s) =>
+        (s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE) &&
+        s.store[RESOURCE_ENERGY] > 200,
     });
     // if one was found
     if (container != undefined) {
