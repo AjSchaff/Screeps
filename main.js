@@ -1,10 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/no-unresolved */
-const roleHarvester = require('role.harvester');
-const roleUpgrader = require('role.upgrader');
-const roleBuilder = require('role.builder');
 require('./prototype.spawnManager');
 require('./prototype.tower');
+require('./prototype.creep');
 
 // eslint-disable-next-line func-names
 module.exports.loop = function () {
@@ -31,21 +29,14 @@ module.exports.loop = function () {
     const towersInRoom = Game.rooms[room].find(FIND_MY_STRUCTURES, {
       filter: (s) => s.structureType === STRUCTURE_TOWER,
     });
-    towersInRoom.forEach((tower) => {
-      tower.serveAndProtect();
+    towersInRoom.forEach((towerInRoom) => {
+      towerInRoom.serveAndProtect();
     });
   });
 
+  // For each Creep in the room, run thier role
   Object.keys(Game.creeps).forEach((name) => {
     const creep = Game.creeps[name];
-    if (creep.memory.role == 'harvester') {
-      roleHarvester.run(creep);
-    }
-    if (creep.memory.role == 'upgrader') {
-      roleUpgrader.run(creep);
-    }
-    if (creep.memory.role == 'builder') {
-      roleBuilder.run(creep);
-    }
+    creep.runRole();
   });
 };
