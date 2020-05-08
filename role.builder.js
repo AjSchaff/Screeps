@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-undef */
 /*
  * Module code goes here. Use 'module.exports' to export things:
  * module.exports.thing = 'a thing';
@@ -7,32 +9,34 @@
  * mod.thing == 'a thing'; // true
  */
 
-let creepFn = require("creepFn");
+const roleBuilder = {
+  /**
+   * @param {Creep} creep
+   */
+  run(creep) {
+    const source = creep.memory.source.id;
+    creep.determineIfWorking();
 
-var roleBuilder = {
-  /** @param {Creep} creep **/
-  run: function (creep) {
-    let source = creep.memory.source.id;
-    if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
-      creep.memory.building = false;
-      creep.say("🔄 harvest");
-    }
-    if (!creep.memory.building && creep.store.getFreeCapacity() == 0) {
-      creep.memory.building = true;
-      creep.say("🚧 build");
-    }
-
-    if (creep.memory.building) {
-      var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-      if (creep.build(target) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(target, {
-          visualizePathStyle: { stroke: "#ffffff" },
+    if (creep.memory.working) {
+      const buildTarget = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+      if (creep.build(buildTarget) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(buildTarget, {
+          visualizePathStyle: { stroke: '#ffffff' },
         });
+      } else {
+        const repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+          filter: (s) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL,
+        });
+        if (repairTarget !== undefined) {
+          if (creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(repairTarget);
+          }
+        }
       }
     } else {
       if (creep.harvest(Game.getObjectById(source)) !== OK) {
         creep.moveTo(Game.getObjectById(source), {
-          visualizePathStyle: { stroke: "#ffaa00" },
+          visualizePathStyle: { stroke: '#ffaa00' },
         });
       }
     }

@@ -15,14 +15,7 @@ const roleHarvester = {
    */
   run(creep) {
     const source = creep.memory.source.id;
-    if (creep.memory.working && creep.store[RESOURCE_ENERGY] === 0) {
-      creep.memory.working = false;
-      creep.say('🔄 harvest');
-    }
-    if (!creep.memory.working && creep.store.getFreeCapacity() === 0) {
-      creep.memory.working = true;
-      creep.say('🚧 delivery');
-    }
+    creep.determineIfWorking();
 
     if (creep.memory.working) {
       const PriorityTargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -35,20 +28,24 @@ const roleHarvester = {
       const SecondaryTargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) => {
           return (
-            (structure.structureType === STRUCTURE_STORAGE ||
-              structure.structureType === STRUCTURE_TOWER) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            structure.structureType === STRUCTURE_TOWER &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) >= creep.store.getCapacity()
           );
         },
       });
-      // console.log('secondary targets: ', SecondaryTargets);
-      if (PriorityTargets || SecondaryTargets) {
-        // console.log('here');
-        // console.log('free energy: ', creep.store.getCapacity());
+      const TertiaryTargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (structure) =>
+          structure.structureType === STRUCTURE_STORAGE &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+      });
+      if (PriorityTargets || SecondaryTargets || TertiaryTargets) {
         if (
-          creep.transfer(PriorityTargets || SecondaryTargets, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE
+          creep.transfer(
+            PriorityTargets || SecondaryTargets || TertiaryTargets,
+            RESOURCE_ENERGY,
+          ) === ERR_NOT_IN_RANGE
         ) {
-          creep.moveTo(PriorityTargets || SecondaryTargets, {
+          creep.moveTo(PriorityTargets || SecondaryTargets || TertiaryTargets, {
             visualizePathStyle: { stroke: '#00FF00' },
           });
         }
