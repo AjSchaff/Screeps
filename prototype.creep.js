@@ -14,6 +14,20 @@ Creep.prototype.runRole = function () {
   roles[role].run(this);
 };
 
+Creep.prototype.determineIfWorking = function () {
+  const creep = this;
+  const { role } = creep.memory;
+
+  if (creep.memory.working && creep.store[RESOURCE_ENERGY] === 0) {
+    creep.memory.working = false;
+    creep.say('🌾 harvest');
+  }
+  if (!creep.memory.working && creep.store.getFreeCapacity() === 0) {
+    creep.memory.working = true;
+    creep.say(`🔨${role}`);
+  }
+};
+
 /** @function
     @param {bool} useContainer
     @param {bool} useSource */

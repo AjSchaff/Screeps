@@ -1,28 +1,32 @@
-let creepFn = require("creepFn");
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-undef */
+/*
+ * Module code goes here. Use 'module.exports' to export things:
+ * module.exports.thing = 'a thing';
+ *
+ * You can import it from another modules like this:
+ * var mod = require('role.builder');
+ * mod.thing == 'a thing'; // true
+ */
 
-let roleUpgrader = {
-  /** @param {Creep} creep **/
-  run: function (creep) {
-    let source = creep.memory.source.id;
-    if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
-      creep.memory.upgrading = false;
-      creep.say("🔄 harvest");
-    }
-    if (!creep.memory.upgrading && creep.store.getFreeCapacity() == 0) {
-      creep.memory.upgrading = true;
-      creep.say("⚡ upgrade");
-    }
+const roleUpgrader = {
+  /**
+   * @param {Creep} creep
+   */
+  run(creep) {
+    const source = creep.memory.source.id;
+    creep.determineIfWorking();
 
-    if (creep.memory.upgrading) {
+    if (creep.memory.working) {
       if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
         creep.moveTo(creep.room.controller, {
-          visualizePathStyle: { stroke: "#ffffff" },
+          visualizePathStyle: { stroke: '#ffffff' },
         });
       }
     } else {
       if (creep.harvest(Game.getObjectById(source)) !== OK) {
         creep.moveTo(Game.getObjectById(source), {
-          visualizePathStyle: { stroke: "#ffaa00" },
+          visualizePathStyle: { stroke: '#ffaa00' },
         });
       }
     }
