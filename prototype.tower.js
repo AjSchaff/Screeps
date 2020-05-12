@@ -1,13 +1,16 @@
 /* eslint-disable no-undef */
 StructureTower.prototype.serveAndProtect = function () {
   const closestHostile = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+  const mostDamagedStructure = this.room.find(FIND_STRUCTURES, {
+    filter: (s) => s.hits < s.hitsMax,
+  });
+  mostDamagedStructure.sort((a, b) => a.hits - b.hits);
+
   if (closestHostile) {
     this.attack(closestHostile);
   }
-  const closestDamagedStructure = this.pos.findClosestByPath(FIND_STRUCTURES, {
-    filter: (s) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL,
-  });
-  if (closestDamagedStructure && this.store.energy > 500) {
-    this.repair(closestDamagedStructure);
+
+  if (mostDamagedStructure && this.store.energy > 500) {
+    this.repair(mostDamagedStructure[0]);
   }
 };
