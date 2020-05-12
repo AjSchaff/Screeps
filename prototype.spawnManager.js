@@ -11,10 +11,11 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
   // find all creeps in room
   /** @type {Array.<Creep>} */
   const creepsInRoom = room.find(FIND_MY_CREEPS);
-  const CreepsInArea = room.lookForAtArea(LOOK_CREEPS, 6, 37, 7, 39, true).length;
   const SourcesInRoom = room.find(FIND_SOURCES);
+  const creepsAtSource = _.sum(creepsInRoom, (c) => c.memory.source.id === SourcesInRoom[1].id);
+
   let source;
-  if (CreepsInArea >= 2) {
+  if (creepsAtSource >= 3) {
     source = SourcesInRoom[0];
   } else {
     source = SourcesInRoom[1];
