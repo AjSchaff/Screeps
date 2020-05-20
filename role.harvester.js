@@ -17,6 +17,10 @@ const roleHarvester = {
     const source = creep.memory.source.id;
     creep.determineIfWorking();
 
+    // determine the list of container ID's and compare it to the creeps list of memory ID's
+    // If the container id is already in memory, don't assign it, if it isn't
+    // assign it to the creep and have him harvest there.
+
     if (creep.memory.working) {
       const PriorityTargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) =>
@@ -50,12 +54,11 @@ const roleHarvester = {
           });
         }
       }
-    } else {
-      if (creep.harvest(Game.getObjectById(source)) !== OK) {
-        creep.moveTo(Game.getObjectById(source), {
-          visualizePathStyle: { stroke: '#ff0000' },
-        });
-      }
+    } else if (creep.harvest(Game.getObjectById(source)) !== OK) {
+      creep.moveTo(Game.getObjectById(source), {
+        visualizePathStyle: { stroke: '#ff0000' },
+      });
+      creep.harvestEnergy();
     }
   },
 };

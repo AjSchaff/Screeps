@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+const spawnFn = require('./spawnFn');
+
 const listOfRoles = ['harvester', 'builder', 'upgrader'];
 
 StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
@@ -7,19 +9,18 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
    */
   const { room } = this;
   const spawn = this.name;
+  const source = spawnFn.determineSource(room);
+  const containers = spawnFn.determineContainer(room, this);
+
+  console.log(containers);
+
+  // See how many containers there are, if any, and set the games memory for
+  // harvesters equal to the number of containers (or sources near containers).
+  // Otherwise I'll hard code the # of harvesters required.
 
   // find all creeps in room
   /** @type {Array.<Creep>} */
   const creepsInRoom = room.find(FIND_MY_CREEPS);
-  const SourcesInRoom = room.find(FIND_SOURCES);
-  const creepsAtSource = _.sum(creepsInRoom, (c) => c.memory.source.id === SourcesInRoom[1].id);
-
-  let source;
-  if (creepsAtSource >= 3) {
-    source = SourcesInRoom[0];
-  } else {
-    source = SourcesInRoom[1];
-  }
 
   const body = [];
   let creepSegments = Math.floor((room.energyAvailable - 50 / 50) / 200);
@@ -28,8 +29,6 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
     body.push(WORK, CARRY, MOVE);
   }
   const numberOfCreeps = {};
-
-  console.log(body);
 
   // count the number of creeps alive for each role in this room
   // _.sum will count the number of properties in Game.creeps filtered by the
