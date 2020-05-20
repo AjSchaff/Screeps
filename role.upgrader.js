@@ -24,11 +24,7 @@ const roleUpgrader = {
         });
       }
     } else {
-      if (creep.harvest(Game.getObjectById(source)) !== OK) {
-        creep.moveTo(Game.getObjectById(source), {
-          visualizePathStyle: { stroke: '#ffaa00' },
-        });
-      }
+      creep.gatherEnergy(true, source);
     }
   },
 };

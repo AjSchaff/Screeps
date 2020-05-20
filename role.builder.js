@@ -19,10 +19,9 @@ const roleBuilder = {
 
     if (creep.memory.working) {
       const buildTarget = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-      const mostDamagedStructure = creep.room.find(FIND_STRUCTURES, {
+      const mostDamagedStructure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL,
       });
-      mostDamagedStructure.sort((a, b) => a.hits - b.hits);
 
       if (buildTarget) {
         if (creep.build(buildTarget) === ERR_NOT_IN_RANGE) {
@@ -31,18 +30,14 @@ const roleBuilder = {
           });
         }
       } else if (mostDamagedStructure) {
-        if (creep.repair(mostDamagedStructure[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(mostDamagedStructure[0], {
+        if (creep.repair(mostDamagedStructure) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(mostDamagedStructure, {
             visualizePathStyle: { stroke: '#ffffff' },
           });
         }
       }
     } else {
-      if (creep.harvest(Game.getObjectById(source)) !== OK) {
-        creep.moveTo(Game.getObjectById(source), {
-          visualizePathStyle: { stroke: '#ffaa00' },
-        });
-      }
+      creep.gatherEnergy(true, source);
     }
   },
 };
