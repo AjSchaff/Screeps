@@ -8,9 +8,7 @@ StructureTower.prototype.serveAndProtect = function () {
 
   if (closestHostile) {
     this.attack(closestHostile);
-  }
-
-  if (mostDamagedStructure && this.store.energy > 500) {
+  } else if (mostDamagedStructure && this.store.energy > 500) {
     this.repair(mostDamagedStructure[0]);
   }
 };
