@@ -21,16 +21,6 @@ const spawnFn = {
 
     return source;
   },
-  determineContainer(room, spawn) {
-    /**
-     * Determine which container should be set in memory for the harvesters spawned.
-     */
-    console.log(spawn.memory.minCreeps.harvester);
-    const containers = room.find(FIND_STRUCTURES, {
-      filter: (s) => s.structureType === STRUCTURE_CONTAINER,
-    });
-    console.log(containers);
-  },
 };
 
 module.exports = spawnFn;

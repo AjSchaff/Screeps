@@ -8,6 +8,9 @@ const roles = {
   repairer: require('role.repairer'),
 };
 
+/** @function
+ * Runs the role of the current creep
+ */
 Creep.prototype.runRole = function () {
   const creep = this;
   const { role } = creep.memory;
@@ -15,20 +18,9 @@ Creep.prototype.runRole = function () {
 };
 
 /**
- * The goal of this function is to determine if any containers are present in the room
- * if they are, the Harvester should only drop resources to the containers
- * if they are not, the Harvester should deliver resources to its Targets.
+ * @function
+ * Determines if the current creep is working
  */
-Creep.prototype.determineHarvestingMethod = function () {
-  const { memory } = this;
-  const containers = this.pos.findClosestByPath(FIND_STRUCTURES, {
-    filter: (s) =>
-      s.structureType === STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-  });
-
-  return containers;
-};
-
 Creep.prototype.determineIfWorking = function () {
   const creep = this;
   const { role } = creep.memory;
@@ -43,29 +35,47 @@ Creep.prototype.determineIfWorking = function () {
   }
 };
 
-Creep.prototype.harvestEnergy = function () {
+/**
+ * @function
+ * @param {object} src the source determined by the creeps memory
+ * The goal of this function is to determine if any containers are present in the room
+ * if they are, the Harvester should only drop resources to the containers
+ * if they are not, the Harvester should deliver resources to its Targets.
+ */
+Creep.prototype.determineDropOffPoint = function (src) {
+  const source = Game.getObjectById(src.id);
   const creep = this;
-  const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-    filter: (s) => s.structureType === STRUCTURE_CONTAINER,
+  const containers = source.pos.findInRange(FIND_STRUCTURES, 1, {
+    filter: (s) =>
+      s.structureType === STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
   });
-
-  // console.log(JSON.stringify(creep.memory));
-
-  // console.log('containers: ', containers.id);
-
-  Object.entries(containers).map(([key, value]) => {
-    if (key === 'id') {
-      // console.log('key: ', key);
-      // console.log('value: ', value);
-    }
-
-    return key + value;
-  });
+  return containers;
 };
 
+// Creep.prototype.harvestEnergy = function () {
+//   const creep = this;
+//   const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+//     filter: (s) => s.structureType === STRUCTURE_CONTAINER,
+//   });
+
+//   // console.log(JSON.stringify(creep.memory));
+
+//   // console.log('containers: ', containers.id);
+
+//   Object.entries(containers).map(([key, value]) => {
+//     if (key === 'id') {
+//       // console.log('key: ', key);
+//       // console.log('value: ', value);
+//     }
+
+//     return key + value;
+//   });
+// };
+
 /** @function
-    @param {bool} useStorageSource
-    @param {object} source */
+ * @param {bool} useStorageSource
+ * @param {object} source
+ */
 Creep.prototype.gatherEnergy = function (useStorageSource, source) {
   let container;
   if (useStorageSource) {

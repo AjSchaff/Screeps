@@ -10,9 +10,6 @@ StructureSpawn.prototype.spawnCreepsIfNecessary = function () {
   const { room } = this;
   const spawn = this.name;
   const source = spawnFn.determineSource(room);
-  const containers = spawnFn.determineContainer(room, this);
-
-  console.log(containers);
 
   // See how many containers there are, if any, and set the games memory for
   // harvesters equal to the number of containers (or sources near containers).

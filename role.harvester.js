@@ -14,7 +14,7 @@ const roleHarvester = {
    * @param {Creep} creep
    */
   run(creep) {
-    const source = creep.memory.source.id;
+    const { source } = creep.memory;
     creep.determineIfWorking();
 
     // determine the list of container ID's and compare it to the creeps list of memory ID's
@@ -22,6 +22,22 @@ const roleHarvester = {
     // assign it to the creep and have him harvest there.
 
     if (creep.memory.working) {
+      const dropOffPoint = creep.determineDropOffPoint(source);
+      // This isn't quite ready yet, need to create Lorry role to fill up the spawns and extensions
+      // So that Harvesters can do this.
+      // if (dropOffPoint) {
+      //   dropOffPoint.forEach((container) => {
+      //     if (container.store.getFreeCapacity() > creep.store.getCapacity()) {
+      //       if (creep.pos.isEqualTo(container.pos)) {
+      //         creep.drop(RESOURCE_ENERGY);
+      //       }
+      //       // if (!creep.pos.isEqualTo(container.pos)) {
+      //       //   console.log('creep: ', creep);
+      //       //   console.log('container: ', container);
+      //       // }
+      //     }
+      //   });
+      // }
       const PriorityTargets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) =>
           (structure.structureType === STRUCTURE_EXTENSION ||
@@ -54,11 +70,10 @@ const roleHarvester = {
           });
         }
       }
-    } else if (creep.harvest(Game.getObjectById(source)) !== OK) {
-      creep.moveTo(Game.getObjectById(source), {
+    } else if (creep.harvest(Game.getObjectById(source.id)) !== OK) {
+      creep.moveTo(Game.getObjectById(source.id), {
         visualizePathStyle: { stroke: '#ff0000' },
       });
-      creep.harvestEnergy();
     }
   },
 };
